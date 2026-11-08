@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  game_service:
+    image: game_service_prod
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: game_service_prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/serviceAccountKey.json:/app/serviceAccountKey.json
+    environment:
+      - ANALYSIS_SERVICE_URL=http://stockfish_analysis_service:8002
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/serviceAccountKey.json
+    command: gunicorn -w 1 -k uvicorn.workers.UvicornWorker app.game_service.main:app --bind 0.0.0.0:8000
+    restart: unless-stopped
+
+  speech_service:
+    image: speech_service_prod
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: speech_service_prod
+    ports:
+      - "8001:8001"
+    environment:
+      - VOSK_MODEL_PATH=/vosk-model
+    command: gunicorn -w 2 -k uvicorn.workers.UvicornWorker app.speech_service.main:app --bind 0.0.0.0:8001
+    restart: unless-stopped
+
+  stockfish_analysis_service:
+    image: stockfish_analysis_service_prod
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: stockfish_analysis_service_prod
+    ports:
+      - "8002:8002"
+    command: uvicorn app.stockfish_analysis_service.main:app --host 0.0.0.0 --port 8002
+    restart: unless-stopped
+
+  frontend:
+    image: frontend_prod
+    container_name: chess_frontend_prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+networks:
+  default:
+    name: chess_prod_network

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Chess</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="left-panel">
+            <details class="option-group mobile-collapsible" open>
+                <summary>
+                    <h2><span class="icon">👤</span> Konto / Logowanie <span class="collapse-arrow">▼</span></h2>
+                </summary>
+                <div id="login-container">
+                    <button id="btn-login-google" class="google-btn">
+                        <svg class="google-icon" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.799 L -6.734 42.379 C -8.804 40.449 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+                            </g>
+                        </svg>
+                        <span>Zaloguj przez Google</span>
+                    </button>
+
+                    <div class="auth-divider">
+                        <span>lub email</span>
+                    </div>
+
+                    <form id="email-auth-form">
+                        <input type="email" id="email-input" class="auth-input" placeholder="Adres email" required autocomplete="email">
+                        <input type="password" id="password-input" class="auth-input" placeholder="Hasło" required autocomplete="current-password">
+
+                        <ul id="password-requirements" class="pass-req-list hidden">
+                            <li id="req-len" class="invalid">Min. 8 znaków</li>
+                            <li id="req-num" class="invalid">Jedna cyfra</li>
+                            <li id="req-cap" class="invalid">Wielka litera</li>
+                        </ul>
+
+                        <button type="submit" id="btn-email-action" class="primary-btn auth-submit-btn">Zaloguj się</button>
+
+                        <div class="auth-links-row">
+                            <a href="#" id="forgot-password-link">Zapomniałeś hasła?</a>
+                        </div>
+
+                        <div id="auth-error-msg" class="auth-error"></div>
+
+                        <div class="auth-toggle-wrapper">
+                            <span id="auth-toggle-text">Nie masz konta?</span>
+                            <a href="#" id="auth-toggle-link">Zarejestruj się</a>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="user-status" class="user-card hidden">
+                    <div class="user-profile-header">
+                        <img id="user-avatar" src="" alt="Avatar" class="user-avatar" onerror="this.style.display='none'">
+                        <div class="user-details">
+                            <span class="welcome-text">Zalogowany jako</span>
+                            <span id="user-name" class="user-name-text"></span>
+                            <span id="verification-badge" class="badge-unverified hidden" title="Konto niezweryfikowane">!</span>
+                        </div>
+                    </div>
+
+                    <div id="verification-warning" class="warning-box hidden">
+                        Email niepotwierdzony.
+                        <button id="resend-verification-btn" class="link-btn">Wyślij link ponownie</button>
+                    </div>
+                    <button id="toggle-settings-btn" class="secondary-btn settings-toggle">Ustawienia konta</button>
+
+                    <div id="user-settings-panel" class="hidden settings-box">
+                        <label>Zmień adres email:</label>
+                        <input type="email" id="new-email-input" class="auth-input" placeholder="Nowy email">
+                        <button id="btn-change-email" class="primary-btn small-btn">Zapisz</button>
+                        <div id="settings-msg" class="settings-msg"></div>
+                    </div>
+
+                    <button id="btn-logout" class="logout-btn" title="Wyloguj się">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Wyloguj
+                    </button>
+                </div>
+            </details>
+
+            <div class="option-group">  <!-- Sekcja wyboru trybu gry -->
+                <h2>Nowa Gra</h2>
+
+                <div class="form-group">    <!-- Wybór pomiędzy dwoma dostępnymi trybami jako combobox -->
+                    <label>Tryb:</label>
+                    <select id="newGameMode">
+                        <option value="freeplay">Freeplay (Analiza)</option>
+                        <option value="ai">Gra z AI (Stockfish)</option>
+                    </select>
+                </div>
+
+                <div id="aiSettingsPanel" class="hidden form-group">    <!-- Wybór poziomu mocy przeciwnika -->
+                    <label>Poziom trudności (1-20):</label>
+                    <input type="number" id="aiLevelInput" min="1" max="20" value="5">
+                </div>
+
+                <div id="colorSelectionPanel">  <!-- Wybór koloru startowego -->
+                    <button id="playerColor" class="color-btn" data-color="white">Graj jako Biały</button>
+                </div>
+
+                <button id="newGameButton" class="primary-btn"> <!-- Rozpoczęcie nowej gry -->
+                    <span style="font-size: 1.2rem; margin-right: 8px;">▶</span>
+                    Rozpocznij Nową Grę
+                </button>
+            </div>
+
+            <div class="option-group auth-required">
+                <h2>Sesja</h2>
+                <div id="activeGamesList" class="history-box small-history">
+                    <p class="empty-state">(Brak gier)</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <div class="game-header">
+                <h1>Voice Chess</h1>
+                <div id="currentGameInfo" class="game-info-container">
+                    <span style="font-size: 1.5rem; margin-right: 10px;">🎮</span>
+                    <span class="text-muted">Brak aktywnej gry</span>
+                </div>
+                <div id="currentTurnInfo" class="game-info-container turn-container">
+                    <span class="text-muted">Tura: ---</span>
+                </div>
+            </div>
+
+            <div class="board-voice-wrapper">
+                <div id="myBoard"></div>
+
+                <div id="voice-status-panel" class="voice-side-panel">
+                    <div class="status-row" style="text-align: center; color: #888; font-size: 0.9rem;">
+                        OSTATNIA KOMENDA:
+                    </div>
+                    <div class="status-row">
+                        <span id="recognized-text-display">...</span>
+                    </div>
+
+                    <div class="voice-activity-container">
+                        <div id="voiceLevel" class="voice-level-bar"></div>
+                    </div>
+
+                    <hr class="status-divider">
+
+                    <div id="statusResultContainer">
+                        <div id="status-header" class="status-line" style="font-weight: bold; font-size: 1.1rem;">Gotowy</div>
+                        <div id="status-main" class="status-line">Wydaj komendę...</div>
+                        <div id="status-details" class="status-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group auth-required">
+                <button id="listenButton" aria-label="Włącz sterowanie głosem">
+                    <span style="font-size: 1.5rem;">🎙️</span>
+                    <span>START LISTENING</span>
+                </button>
+
+                <button id="flipBoardBtn" class="secondary-btn" aria-label="Obróć szachownicę">
+                    <span>🔄 Obróć</span>
+                </button>
+
+                <button id="surrenderBtn" class="danger-btn" aria-label="Poddaj grę">
+                    <span>🏳️ Poddaj</span>
+                </button>
+            </div>
+        </main>
+
+        <aside class="right-panel">
+            <div id="panel-analysis" class="option-group auth-required">
+                <h2>Analiza Stockfish</h2>
+                <div id="analysisPanel" class="analysis-box">
+                    <div><strong>Ocena:</strong> <span id="analysisScore">---</span></div>
+                    <div><strong>Najlepszy ruch:</strong> <span id="bestMove">---</span></div>
+                    <div><strong>Wariacja PV:</strong> <span id="pvLine">---</span></div>
+                    <div><strong>Głębokość:</strong> <span id="analysisDepth">---</span></div>
+                </div>
+            </div>
+            <div class="option-group">
+                <h2>Historia Ruchów</h2>
+                <div id="moveHistory" class="history-box">
+                    <p class="empty-state">(Brak ruchów)</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+FROM python:3.11-slim
+
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y curl tar git && rm -rf /var/lib/apt/lists/*
+
+RUN pip install poetry
+
+ENV STOCKFISH_VERSION=sf_17.1
+RUN curl -L -o stockfish.tar https://github.com/official-stockfish/Stockfish/releases/download/${STOCKFISH_VERSION}/stockfish-ubuntu-x86-64-avx2.tar \
+    && tar -xf stockfish.tar \
+    && mv stockfish/stockfish-ubuntu-x86-64-avx2 /usr/local/bin/stockfish \
+    && chmod +x /usr/local/bin/stockfish \
+    && rm -rf stockfish stockfish.tar
+
+COPY pyproject.toml poetry.lock ./
+RUN poetry install --no-root --with dev
+
+COPY . .
+COPY serviceAccountKey.json .
+
+CMD ["bash"]

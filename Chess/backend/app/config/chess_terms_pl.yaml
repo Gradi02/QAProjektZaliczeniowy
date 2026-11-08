@@ -1,0 +1,55 @@
+pieces_mapping:
+  P: [pionek, pion, pionkiem, janek]
+  N: [skoczek, konik, koń, skoczkiem, koniem, koczek]
+  B: [goniec, laufer, gońcem]
+  R: [wieża, wieżą, wieże]
+  Q: [hetman, królowa, królową]
+  K: [król, królem]
+
+coordinates:
+  files:
+    a: [a]
+    b: [be, b]
+    c: [ce, c]
+    d: [de, d]
+    e: [e]
+    f: [ef, f]
+    g: [ge, g]
+    h: [ha, h]
+  ranks:
+    '1': ['1', jeden, jedynkę, jedynka, pierwsza, pierwszego, pierwszy]
+    '2': ['2', dwa, dwójkę, dwójka, druga, drugiego, drugi]
+    '3': ['3', trzy, trójkę, trójka, trzecia, trzeciego, trzeci]
+    '4': ['4', cztery, czwórkę, czwórka, czwarta, czwartego, czwarty]
+    '5': ['5', pięć, piątkę, piątka, piąta, piątego, piąty]
+    '6': ['6', sześć, szóstkę, szóstka, szósta, szóstego, szósty]
+    '7': ['7', siedem, siódemkę, siódemka, siódma, siódmego, siódmy]
+    '8': ['8', osiem, ósemkę, ósemka, ósma, ósmego, ósmy]
+
+intents:
+  capture:
+    - bije
+    - biję
+    - biorę
+
+special_moves_mapping:
+  kingside_castle:
+    - krótka roszada
+    - roszada krótka
+    - mała roszada
+    - roszada mała
+  queenside_castle:
+    - długa roszada
+    - roszada długa
+    - duża roszada
+    - roszada duża
+
+promotion_pieces_mapping:
+  Q: [hetman, królowa]
+  R: [wieża]
+  B: [goniec]
+  N: [skoczek, koń]
+
+action_verbs: [przesuń, ruch, idź, zagraj, gram]
+filler_words: [na, do, z, pola, pole, w]
+confirmation: ['tak', 'potwierdź', 'potwierdzam', 'zgadza się', 'wykonaj', 'ok', 'dobrze', 'nie', 'anuluj', 'odrzuć', 'stop', 'źle', 'ponownie']
