@@ -2,67 +2,66 @@
 
 ## Strona tytułowa
 
-**Temat:** Zarządzanie jakością aplikacji szachowej VChess z obsługą poleceń głosowych  
-**Autor:** [imię i nazwisko]  
-**Kierunek / grupa:** [uzupełnij]  
-**Przedmiot:** [uzupełnij]  
-**Prowadzący:** [uzupełnij]  
-**Data:** [uzupełnij]
-
-> **Uwaga do szablonu:** fragmenty w nawiasach kwadratowych należy uzupełnić. Wartości w kryteriach akceptacji są propozycjami do sprawdzenia i zatwierdzenia. Nie stanowią wyników wykonanych testów.
+**Temat:** Zarządzanie jakością aplikacji szachowej VChess 
+**Autor:** Adrian Nowowiejski
 
 ## 1. Opis systemu lub funkcji
 
 ### 1.1. Przedmiot projektu
 
-Przedmiotem projektu jest ocena i zaplanowanie jakości systemu VChess – aplikacji umożliwiającej rozgrywanie partii szachowych w przeglądarce, w tym wydawanie poleceń głosowych w języku polskim. System składa się z interfejsu webowego oraz współpracujących usług backendowych uruchamianych w kontenerach Docker.
+Przedmiotem projektu jest ocena i zaplanowanie jakości systemu VChess - aplikacji umożliwiającej rozgrywanie partii szachowych w przeglądarce, w tym wydawanie poleceń głosowych w języku polskim. System składa się z interfejsu webowego oraz współpracujących usług backendowych uruchamianych w kontenerach Docker.
 
 Zakres niniejszego opracowania obejmuje przede wszystkim jakość obsługi partii i głosowego wykonywania ruchów: od nagrania polecenia, przez rozpoznanie i interpretację, do zatwierdzenia oraz wykonania legalnego ruchu. Dodatkowe funkcje objęte opisem to gra z komputerowym przeciwnikiem, analiza pozycji i przechowywanie danych partii.
 
-**Wersja / stan systemu poddawany ocenie:** [uzupełnij, np. identyfikator wersji lub data pobrania kodu]  
-**Środowisko oceny:** [uzupełnij: system operacyjny, przeglądarka, parametry komputera, sposób uruchomienia]
+**Środowisko oceny:**
+- Windows 11
+- Przeglądarka Brave
+- Aplikacja uruchamiana jest w kontenerach Docker
 
 ### 1.2. Cel systemu
 
 Celem VChess jest umożliwienie użytkownikowi rozgrywania partii szachowej z użyciem interfejsu przeglądarkowego oraz poleceń głosowych. System ma rozpoznać wypowiedziane polecenie, powiązać je z ruchem możliwym w aktualnej pozycji i pozwolić użytkownikowi potwierdzić albo odrzucić proponowany ruch. Dzięki temu użytkownik może obsługiwać rozgrywkę bez konieczności ręcznego wybierania pól na planszy.
 
-Aplikacja udostępnia ponadto tryb gry dwóch osób, tryb gry z AI, historię partii oraz analizę pozycji za pomocą silnika Stockfish.
+Aplikacja udostępnia ponadto tryb freeplay, tryb gry z AI, historię partii oraz analizę pozycji za pomocą silnika Stockfish.
 
-**Problem użytkownika, który rozwiązuje system:** [opisz własnymi słowami]  
-**Cel jakościowy projektu:** [np. ocena poprawności interpretowania poleceń, wygody obsługi i odporności na błędy]
+**Cel jakościowy projektu:** 
+- Ocena jakości logiki jednostek systemu
+- Ocena jakości integracji systemu
+- Ocena jakości doświadczeń użytkownika aplikacji 
+- Zdiagnozowanie potencjalnych problemów i defektów projektu
+- Ocena jakości dostępności dla osób ze wskazanymi niepełnosprawnościami motorycznymi
 
 ### 1.3. Główni użytkownicy i interesariusze
 
 | Użytkownik / interesariusz | Potrzeby i oczekiwania |
 |---|---|
-| Gracz | Czytelna plansza, poprawne wykonywanie ruchów, informacja o stanie partii i możliwość kontroli nad ruchem głosowym. |
-| Osoba grająca z AI | Możliwość rozpoczęcia partii, wyboru koloru i poziomu AI oraz otrzymywania ruchów przeciwnika. |
+| Gracz | Czytelna plansza, poprawne wykonywanie ruchów, informacja o stanie partii, intuicyjne sterowanie i kontrola nad aplikacją, możliwość wygodnego korzystania wyłącznie przy użyciu interfejsu głosowego, dobra jakość rozpoznawania poleceń w różnych warunkach otoczenia |
 | Osoba oceniająca projekt | Jasno zdefiniowane wymagania jakościowe, kryteria akceptacji, ryzyka i dowody z testów. |
-| Autor / osoba utrzymująca system | Możliwość uruchomienia usług, diagnozowania błędów i rozwijania aplikacji. |
-
-**Inni użytkownicy lub interesariusze:** [uzupełnij, jeśli dotyczy]
+| Autor / osoba utrzymująca system | Możliwość modularnego uruchomienia usług, diagnozowania błędów i rozwijania aplikacji, możliwość 'prostego' wdrożenia produkcyjnego aplikacji |
 
 ### 1.4. Podstawowy sposób działania
 
-1. Użytkownik uruchamia aplikację webową i rozpoczyna nową partię lub wybiera dostępną partię.
+1. Użytkownik uruchamia aplikację webową, loguje się na swoje konto i rozpoczyna nową partię lub wybiera dostępną nieukończoną partię.
+![alt text](image-1.png)
+
 2. Wybiera tryb gry: swobodną rozgrywkę między ludźmi albo rozgrywkę z AI. W trybie AI może grać białymi lub czarnymi.
-3. Przy poleceniu głosowym użytkownik zezwala przeglądarce na dostęp do mikrofonu i wypowiada ruch. Frontend przesyła nagranie do usługi rozpoznawania mowy Vosk.
+3. Użytkownik zezwala przeglądarce na dostęp do mikrofonu i wypowiada ruch. Frontend przesyła nagranie do usługi rozpoznawania mowy Vosk.
+![alt text](image-2.png)
+
 4. Rozpoznany tekst trafia do usługi gry. Parser interpretuje polecenie w kontekście bieżącej pozycji i sprawdza możliwe ruchy.
 5. Jeśli system dopasuje jeden ruch, pokazuje go do potwierdzenia. Jeśli polecenie jest niejednoznaczne lub nie pasuje do legalnego ruchu, informuje o tym użytkownika i nie wykonuje ruchu.
 6. Po potwierdzeniu backend wykonuje ruch, aktualizuje pozycję i historię partii. Zakończenie partii jest sygnalizowane w interfejsie.
 7. W trybie AI ruch przeciwnika wyznacza silnik Stockfish. W trybie swobodnym dostępna jest analiza pozycji.
 
-**Schemat lub diagram przepływu:** [wstaw diagram, jeśli będzie potrzebny]
+![alt text](image.png)
 
 ### 1.5. Granice systemu i założenia
 
-**W zakresie projektu:** interfejs przeglądarkowy, obsługa partii, rozpoznawanie i interpretowanie poleceń głosowych, walidacja legalności ruchu, potwierdzanie ruchu, tryb AI, analiza Stockfish oraz zapis i odczyt danych partii.
+**W zakresie projektu:** interfejs przeglądarkowy, obsługa partii, rozpoznawanie i interpretowanie poleceń głosowych, walidacja legalności ruchu, potwierdzanie ruchu, tryb AI, konta i logowanie, analiza Stockfish oraz zapis i odczyt danych partii w bazie Firebase, dostępność dla osób z określonymi niepełnosprawnościami motorycznymi.
 
-**Poza zakresem / ograniczenia do potwierdzenia:** [np. gra przez Internet między zdalnymi użytkownikami, konta i logowanie, działanie w chmurze, dostępność dla osób z określonymi niepełnosprawnościami, porównanie silników szachowych].
+**Poza zakresem / ograniczenia do potwierdzenia:** gra przez Internet między zdalnymi użytkownikami, działanie w chmurze, porównanie silników szachowych.
 
-System wymaga uruchomionych usług backendowych i frontendu. Rozpoznawanie mowy korzysta z modelu Vosk dostępnego dla usługi; jakość wyniku może zależeć od mikrofonu, hałasu, wymowy oraz treści polecenia. Dostęp do mikrofonu wymaga zgody użytkownika w przeglądarce.
-
-**Inne przyjęte założenia:** [uzupełnij]
+System wymaga uruchomionych usług backendowych i frontendu. Rozpoznawanie mowy korzysta z lokalnego modelu Vosk; jakość wyniku może zależeć od mikrofonu, hałasu, akcentu, wymowy oraz treści polecenia. Dostęp do mikrofonu wymaga zgody użytkownika w przeglądarce.
 
 ## 2. Wymagania jakościowe
 
